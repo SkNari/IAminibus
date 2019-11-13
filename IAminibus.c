@@ -7,12 +7,18 @@ struct Station{
 	int id,
 	int x,
 	int y,
-	int capacite
+	int capacite,
+	struct ListeVoyageur voyageurs
 };
 
 struct ListeStation{
 	struct Station s,
 	struct ListeStation* next
+};
+
+struct ListeVoyageur{
+	struct Voyageur v,
+	struct ListeVoyageur* next
 };
 
 struct Voyageur { 
@@ -84,6 +90,36 @@ struct Station chercherStationParId(int id,struct ListeStation liste){
 
 }
 
+void ajouterVoyageur(struct ListeVoyageur* liste, struct Voyageur v){
+
+	struct ListeVoyageur nouveauVoyageur, voyageurCourant;
+	nouveauVoyageur.v = v;
+	voyageurCourant = *liste;
+
+	while(voyageurCourant.next!=NULL){
+		voyageurCourant = voyageurCourant.next;	
+	}
+
+	voyageurCourant.next = nouveauVoyageur;
+
+}
+
+struct Voyageur chercherStationParId(int id,struct ListeVoyageur liste){
+
+	struct ListeVoyageur voyageurCourant;
+	voyageurCourant = liste;
+
+	while(voyageurCourant.next!=NULL){
+		if(voyageurCourant.v.id==id){
+			return voyageurCourant.v;
+		}
+		voyageurCourant = voyageurCourant.next;	
+	}
+
+	return NULL;
+
+}
+
 /*main*/
 
 int main(int argc,char ** argv){
@@ -94,4 +130,4 @@ int main(int argc,char ** argv){
 	nbJoueur = 5;
 	initialiserPartie(&joueur,nbJoueur);
 
-} 
+}		
