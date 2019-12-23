@@ -4,47 +4,55 @@
 
 /*Structures de donnees*/
 
-struct Voyageur { 
+typedef struct Voyageur { 
 	int id;
 	int idStationDepart;
 	int idStationArrivee;
-};
+}Voyageur;
 
-struct ListeVoyageur{
-	struct Voyageur v;
-	struct ListeVoyageur* next;
-};
+typedef struct VoyageurElement{
+	Voyageur v;
+	VoyageurElement* next;
+}VoyageurElement;
 
-struct Station{
+typedef struct ListeVoyageur{
+	VoyageurElement* first;
+}ListeVoyageur;
+
+typedef struct Station{
 	int id;
 	int x;
 	int y;
 	int capacite;
-	struct ListeVoyageur voyageurs;
-};
+	ListeVoyageur* voyageurs;
+}Station;
 
-struct ListeStation{
-	struct Station s;
-	struct ListeStation* next;
-};
+typedef struct StationElement{
+	Station s;
+	ListeStation* next;
+}StationElement;
 
-struct Bus {
+typedef struct ListeStation{
+	StationElement* first;
+}ListeStation;
+
+typedef struct Bus {
 	int id;
 	int x;
 	int y;
 	int station;
 	int nbVoiture;
-	struct Voyageur* voyageurs;
-};
+	ListeVoyageur* voyageurs;
+}Bus;
 
-struct Joueur {
+typedef struct Joueur {
 	int id;
 	int banque;
 	int ameliorationVoiture;
 	int ameliorationVitesse;
 	int ameliorationTarif;
-	struct Bus bus[4];
-};
+	Bus bus[4];
+}Joueur;
 
 /*fonctions*/
 
@@ -63,10 +71,10 @@ void initialiserPartie(struct Joueur** joueurs, int nbJoueur){
 
 void ajouterStation(struct ListeStation* liste, struct Station s){
 
-	struct ListeStation* nouvelleStation,* stationCourante;
-	nouvelleStation = (struct ListeStation*)malloc(sizeof(struct ListeStation));
+	struct StationElement* nouvelleStation,* stationCourante;
+	nouvelleStation = (struct StationElement*)malloc(sizeof(struct StationElement));
 	nouvelleStation->s = s;
-	stationCourante = liste;
+	stationCourante = liste->first;
 
 	while(stationCourante->next!=NULL){
 		stationCourante = stationCourante->next;	
@@ -78,8 +86,8 @@ void ajouterStation(struct ListeStation* liste, struct Station s){
 
 void* chercherStationParId(int id,struct ListeStation* liste){
 
-	struct ListeStation* stationCourante;
-	stationCourante = liste;
+	struct StationElement* stationCourante;
+	stationCourante = liste->first;
 
 	while(stationCourante!=NULL){
 		if(stationCourante->s.id==id){
@@ -94,29 +102,29 @@ void* chercherStationParId(int id,struct ListeStation* liste){
 
 void ajouterVoyageur(struct ListeVoyageur* liste, struct Voyageur v){
 
-	struct ListeVoyageur* voyageurCourant,* nouveauVoyageur;
-	nouveauVoyageur = (struct ListeVoyageur*) malloc(sizeof(struct ListeVoyageur));
+	struct VoyageurElement* voyageurCourant,* nouveauVoyageur;
+	nouveauVoyageur = (struct VoyageurElement*) malloc(sizeof(struct VoyageurElement));
 	nouveauVoyageur->v = v;
-	voyageurCourant = liste;
+	voyageurCourant = liste->first;
 
 	while(voyageurCourant->next!=NULL){
 		voyageurCourant = voyageurCourant->next;	
 	}
 
-	liste->next = nouveauVoyageur;
+	voyageurCourant->next = nouveauVoyageur;
 
 }
 
 struct Voyageur* chercherVoyageurParId(int id,struct ListeVoyageur* liste){
 
-	struct ListeVoyageur* voyageurCourant;
-	voyageurCourant = liste;
+	struct VoyageurElement* voyageurCourant;
+	voyageurCourant = liste->first;
 
 	while(voyageurCourant!=NULL){
 		if(voyageurCourant->v.id==id){
 			return &(voyageurCourant->v);
 		}
-		voyageurCourant = voyageurCourant->next;	
+		voyageurCourant = voyageurCourant->next;
 	}
 
 	return NULL;
@@ -140,5 +148,4 @@ int main(int argc,char ** argv){
 		write(1,"PASS\n",5);
 
 	}
-
-}		
+}
